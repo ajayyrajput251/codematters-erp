@@ -366,6 +366,9 @@
 			<plugin>
 				<groupId>org.gaul</groupId>
 				<artifactId>modernizer-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 			<!-- jhipster-needle-maven-add-plugin -->
 		</plugins>
@@ -476,6 +479,8 @@
 					<version>${frontend-maven-plugin.version}</version>
 					<configuration>
 						<installDirectory>${user.home}</installDirectory>
+						<nodeVersion>${node.version}</nodeVersion>
+						<npmVersion>${npm.version}</npmVersion>
 					</configuration>
 				</plugin>
 
@@ -886,18 +891,17 @@
 						<groupId>com.github.eirslett</groupId>
 						<artifactId>frontend-maven-plugin</artifactId>
 						<executions>
-							<!--
-                            <execution>
-                                <id>install-node-and-npm</id>
-                                <goals>
-                                    <goal>install-node-and-npm</goal>
-                                </goals>
-                                <configuration>
-                                    <nodeVersion>${node.version}</nodeVersion>
-                                    <npmVersion>${npm.version}</npmVersion>
-                                </configuration>
-                            </execution>
-			-->
+							<execution>
+								<id>install-node-and-npm</id>
+								<goals>
+									<goal>install-node-and-npm</goal>
+								</goals>
+								<configuration>
+									<nodeVersion>${node.version}</nodeVersion>
+									<npmVersion>${npm.version}</npmVersion>
+								</configuration>
+							</execution>
+
 							<execution>
 								<id>npm install</id>
 								<goals>
