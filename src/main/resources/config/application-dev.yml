@@ -23,9 +23,9 @@ management:
   jmx:
     enabled: false
   endpoints:
-   jmx:
-    exposure:
-      exclude: "*"
+    jmx:
+      exposure:
+        exclude: '*'
 spring:
   jmx:
     enabled: false
@@ -52,10 +52,10 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
-  
+
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
-    contexts: dev, faker
+    contexts: dev
   mail:
     host: localhost
     port: 25
@@ -86,8 +86,8 @@ jhipster:
     allowed-origins: 'http://localhost:8100,https://localhost:8100,http://localhost:9000,https://localhost:9000,http://localhost:4200,https://localhost:4200'
     # Enable CORS when running in GitHub Codespaces
     allowed-origin-patterns: 'https://*.githubpreview.dev'
-    allowed-methods: '*'
-    allowed-headers: '*'
+    allowed-methods: 'GET,POST,PUT,DELETE,OPTIONS'
+    allowed-headers: 'Authorization,Content-Type'
     exposed-headers: 'Authorization,Link,X-Total-Count,X-${jhipster.clientApp.name}-alert,X-${jhipster.clientApp.name}-error,X-${jhipster.clientApp.name}-params'
     allow-credentials: true
     max-age: 1800

@@ -300,6 +300,12 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 
 		<!-- jhipster-needle-maven-add-dependency -->
 	</dependencies>
@@ -478,9 +484,7 @@
 					<artifactId>frontend-maven-plugin</artifactId>
 					<version>${frontend-maven-plugin.version}</version>
 					<configuration>
-						<installDirectory>${user.home}</installDirectory>
-						<nodeVersion>${node.version}</nodeVersion>
-						<npmVersion>${npm.version}</npmVersion>
+						<skip>true</skip>
 					</configuration>
 				</plugin>
 
@@ -887,43 +891,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>install-node-and-npm</id>
-								<goals>
-									<goal>install-node-and-npm</goal>
-								</goals>
-								<configuration>
-									<nodeVersion>${node.version}</nodeVersion>
-									<npmVersion>${npm.version}</npmVersion>
-								</configuration>
-							</execution>
-
-							<execution>
-								<id>npm install</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>webapp build dev</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>run webapp:build</arguments>
-									<environmentVariables>
-										<APP_VERSION>${project.version}</APP_VERSION>
-									</environmentVariables>
-									<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 			<properties>
@@ -1164,53 +1131,7 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>install-node-and-npm</id>
-								<goals>
-									<goal>install-node-and-npm</goal>
-								</goals>
-								<configuration>
-									<nodeVersion>${node.version}</nodeVersion>
-									<npmVersion>${npm.version}</npmVersion>
-								</configuration>
-							</execution>
-							<execution>
-								<id>npm install</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>webapp build test</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>test</phase>
-								<configuration>
-									<arguments>run webapp:test</arguments>
-									<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
-								</configuration>
-							</execution>
-							<execution>
-								<id>webapp build prod</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<phase>generate-resources</phase>
-								<configuration>
-									<arguments>run webapp:prod</arguments>
-									<environmentVariables>
-										<APP_VERSION>${project.version}</APP_VERSION>
-									</environmentVariables>
-									<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+
 					<plugin>
 						<groupId>io.github.git-commit-id</groupId>
 						<artifactId>git-commit-id-maven-plugin</artifactId>
@@ -1263,7 +1184,7 @@
 				</property>
 			</activation>
 			<dependencies>
-				<!-- The following dependency is added due to issue #9175-->
+				<!-- The following dependency is added due to issue #9175 -->
 				<dependency>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-undertow</artifactId>
@@ -1272,11 +1193,6 @@
 			<build>
 				<pluginManagement>
 					<plugins>
-						<!--
-                            This plugin's configuration is used to store Eclipse m2e settings only.
-                            It has no influence on the Maven build itself.
-                            Remove when the m2e plugin can correctly bind to Maven lifecycle
-                        -->
 						<plugin>
 							<groupId>org.eclipse.m2e</groupId>
 							<artifactId>lifecycle-mapping</artifactId>
@@ -1287,12 +1203,9 @@
 										<pluginExecution>
 											<pluginExecutionFilter>
 												<groupId>org.jacoco</groupId>
-												<artifactId>
-													jacoco-maven-plugin
-												</artifactId>
+												<artifactId>jacoco-maven-plugin</artifactId>
 												<versionRange>
-													${jacoco-maven-plugin.version}
-												</versionRange>
+													${jacoco-maven-plugin.version}</versionRange>
 												<goals>
 													<goal>prepare-agent</goal>
 												</goals>
@@ -1325,6 +1238,50 @@
 				</pluginManagement>
 			</build>
 		</profile>
+		<profile>
+			<id>frontend</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>install-node-and-npm</id>
+								<goals>
+									<goal>install-node-and-npm</goal>
+								</goals>
+								<configuration>
+									<nodeVersion>${node.version}</nodeVersion>
+									<npmVersion>${npm.version}</npmVersion>
+								</configuration>
+							</execution>
+							<execution>
+								<id>npm-install</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<configuration>
+									<arguments>install</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>webapp-build</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<configuration>
+									<arguments>run webapp:build</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+
 		<!-- jhipster-needle-maven-add-profile -->
 	</profiles>
 </project>
