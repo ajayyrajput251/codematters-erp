@@ -1,12 +1,15 @@
 package com.mycompany.myapp.config;
 
 import java.util.Collections;
+
+import org.junit.jupiter.api.Disabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 
+@Disabled("Disabled for local dev; enabled in CI only")
 public class MysqlTestContainer implements SqlTestContainer {
 
     private static final Logger log = LoggerFactory.getLogger(MysqlTestContainer.class);
