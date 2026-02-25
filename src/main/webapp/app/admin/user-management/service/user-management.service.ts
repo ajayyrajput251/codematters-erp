@@ -6,6 +6,8 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { createRequestOption } from 'app/core/request/request-util';
 import { Pagination } from 'app/core/request/request.model';
 import { IUser } from '../user-management.model';
+import { UserStat } from 'app/entities/user/user-stat.model';
+
 
 @Injectable({ providedIn: 'root' })
 export class UserManagementService {
@@ -36,5 +38,16 @@ export class UserManagementService {
 
   authorities(): Observable<string[]> {
     return this.http.get<string[]>(this.applicationConfigService.getEndpointFor('api/authorities'));
+  }
+
+   // =========================================================
+  // 🔹 NEW API: Get activated & total user count (ADMIN ONLY)
+  // Backend URL: /api/admin/user-activation-stats
+  // =========================================================
+  getUserActivationStats(): Observable<UserStat> {
+    return this.http.get<UserStat>(
+      this.applicationConfigService.getEndpointFor('api/admin/user-activation-stats')
+    );
+
   }
 }

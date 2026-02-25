@@ -218,5 +218,26 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     private boolean containsPackageName(String message) {
         // This list is for sure not complete
         return StringUtils.containsAny(message, "org.", "java.", "net.", "javax.", "com.", "io.", "de.", "com.mycompany.myapp");
+    }/**
+     * Handles UserStateNotFoundException.
+     * 
+     * This exception is thrown when user activation statistics
+     * are not available or cannot be retrieved from the system.
+     * 
+     * It returns a 404 NOT_FOUND response in RFC7807 Problem format.
+     */
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleUserStateNotFoundException(
+        UserStateNotFoundException ex,
+        NativeWebRequest request
+    ) {
+        Problem problem = Problem
+            .builder()
+            .withStatus(Status.NOT_FOUND)
+            .with("message", ex.getMessage())
+            .build();
+
+        return create(ex, problem, request);
     }
+
 }

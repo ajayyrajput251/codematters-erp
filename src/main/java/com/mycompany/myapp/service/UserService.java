@@ -9,6 +9,8 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.web.rest.errors.UserStateNotFoundException;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -23,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.security.RandomUtil;
+import com.mycompany.myapp.service.dto.UserActivationStatsDTO;
+
 
 /**
  * Service class for managing users.
@@ -314,6 +318,13 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public UserActivationStatsDTO getUserActivationStats() {
+        long totalUsers = userRepository.count();
+        long activatedUsers = userRepository.countByActivatedTrue();
+       
+        return new UserActivationStatsDTO(totalUsers, activatedUsers);
     }
 
     private void clearUserCaches(User user) {

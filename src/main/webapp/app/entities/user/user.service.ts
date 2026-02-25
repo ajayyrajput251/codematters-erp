@@ -7,6 +7,11 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { isPresent } from 'app/core/util/operators';
 import { Pagination } from 'app/core/request/request.model';
 import { IUser, getUserIdentifier } from './user.model';
+import { UserStat } from './user-stat.model';
+
+
+
+
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -14,10 +19,15 @@ export class UserService {
 
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
+
   query(req?: Pagination): Observable<HttpResponse<IUser[]>> {
     const options = createRequestOption(req);
     return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
+  getUserActivationStats(): Observable<UserStat> {
+  return this.http.get<UserStat>('api/admin/user-activation-stats');
+}
+
 
   compareUser(o1: Pick<IUser, 'id'> | null, o2: Pick<IUser, 'id'> | null): boolean {
     return o1 && o2 ? o1.id === o2.id : o1 === o2;
