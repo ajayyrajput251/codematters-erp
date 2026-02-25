@@ -6,6 +6,8 @@
       "createLabel": "Create a new user",
       "createOrEditLabel": "Create or edit a user"
     },
+    "activatedUsers": "Activated Users {{ activated }} / {{ total }}",
+    "loadingStats": "Loading stats...",
     "created": "A new user is created with identifier {{ param }}",
     "updated": "A user is updated with identifier {{ param }}",
     "deleted": "A user is deleted with identifier {{ param }}",

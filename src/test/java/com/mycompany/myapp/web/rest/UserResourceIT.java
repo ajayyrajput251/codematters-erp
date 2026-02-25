@@ -579,4 +579,22 @@ class UserResourceIT {
     private void assertPersistedUsers(Consumer<List<User>> userAssertion) {
         userAssertion.accept(userRepository.findAll());
     }
+    @Test
+    @Transactional
+    @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
+    void shouldReturn404WhenUserActivationStatsIsNull() throws Exception {
+
+        userRepository.deleteAll();
+        userRepository.flush();
+
+        restUserMockMvc.perform(get("/api/user-activation-stats")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.message")
+                .value("No users found in the system"));
+    }
+
+
+
 }

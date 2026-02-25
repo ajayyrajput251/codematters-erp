@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpResponse, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
@@ -11,6 +13,10 @@ import { Account } from 'app/core/auth/account.model';
 import { UserManagementService } from '../service/user-management.service';
 import { User } from '../user-management.model';
 import { UserManagementDeleteDialogComponent } from '../delete/user-management-delete-dialog.component';
+import { UserService } from 'app/entities/user/user.service';
+import { UserStat } from 'app/entities/user/user-stat.model';
+
+
 
 @Component({
   selector: 'jhi-user-mgmt',
@@ -25,9 +31,15 @@ export class UserManagementComponent implements OnInit {
   page!: number;
   predicate!: string;
   ascending!: boolean;
+ userStats: UserStat | null = null;
+  isStatsLoading = false;
+statsError: string | null = null;
+
+
 
   constructor(
     private userService: UserManagementService,
+      private statsUserService: UserService,
     private accountService: AccountService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -37,6 +49,7 @@ export class UserManagementComponent implements OnInit {
   ngOnInit(): void {
     this.accountService.identity().subscribe(account => (this.currentAccount = account));
     this.handleNavigation();
+    this.loadUserStats();
   }
 
   setActive(user: User, isActivated: boolean): void {
@@ -66,6 +79,7 @@ export class UserManagementComponent implements OnInit {
         size: this.itemsPerPage,
         sort: this.sort(),
       })
+      
       .subscribe({
         next: (res: HttpResponse<User[]>) => {
           this.isLoading = false;
@@ -73,7 +87,38 @@ export class UserManagementComponent implements OnInit {
         },
         error: () => (this.isLoading = false),
       });
+
+  
+
+
   }
+loadUserStats(): void {
+
+  if (this.isStatsLoading) return;
+
+  this.isStatsLoading = true;
+  this.statsError = null;
+
+  this.userService.getUserActivationStats()
+    .pipe(
+      finalize(() => this.isStatsLoading = false)
+    )
+    .subscribe({
+      next: (data) => this.userStats = data,
+      error: (err) => {
+        this.statsError =
+          err?.error?.message || 'Unable to load user statistics.';
+      }
+    });
+}
+
+
+refreshData(): void {
+  this.loadAll();
+  this.loadUserStats();
+}
+
+
 
   transition(): void {
     this.router.navigate(['./'], {

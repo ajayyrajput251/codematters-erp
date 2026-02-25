@@ -1,17 +1,68 @@
 <div>
-  <h2>
-    <span id="user-management-page-heading" jhiTranslate="userManagement.home.title" data-cy="userManagementPageHeading">Users</span>
+  <h2
+    id="user-management-page-heading"
+    class="d-flex justify-content-between align-items-start"
+  >
+    <span jhiTranslate="userManagement.home.title">Users</span>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+    <div class="d-flex align-items-center gap-2">
+
+      <!-- Active Users Button -->
+      <button
+        class="btn btn-success me-2 d-flex align-items-center"
+        (click)="loadUserStats()"
+        [disabled]="isStatsLoading"
+      >
+        <fa-icon icon="chart-bar" class="me-1"></fa-icon>
+
+        <fa-icon
+          *ngIf="isStatsLoading"
+          icon="sync"
+          [spin]="true"
+          class="me-1">
+        </fa-icon>
+
+        <span *ngIf="!userStats || isStatsLoading">
+          {{ isStatsLoading ? 'Loading...' : 'View Activation Stats' }}
+        </span>
+
+        <span *ngIf="userStats && !isStatsLoading">
+          Active Users {{ userStats!.activatedUsers }}/{{ userStats!.totalUsers }}
+        </span>
+      </button>
+
+      <!-- Refresh Button -->
+      <button class="btn btn-info" (click)="loadAll()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="userManagement.home.refreshListLabel">Refresh list</span>
+        <span class="ms-1" jhiTranslate="userManagement.home.refreshListLabel">
+          Refresh list
+        </span>
       </button>
-      <button class="btn btn-primary jh-create-entity" [routerLink]="['./new']">
-        <fa-icon icon="plus"></fa-icon> <span jhiTranslate="userManagement.home.createLabel">Create a new user</span>
+
+      <!-- Create Button -->
+      <button class="btn btn-primary" routerLink="/admin/user-management/new">
+        <fa-icon icon="plus"></fa-icon>
+        <span class="ms-1" jhiTranslate="userManagement.home.createLabel">
+          Create a new user
+        </span>
       </button>
+
     </div>
   </h2>
+
+  <!-- Global Loader (Kept As It Is) -->
+  <div *ngIf="isStatsLoading" class="mt-3">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error State (Kept As It Is) -->
+  <div *ngIf="statsError && !isStatsLoading" class="alert alert-danger mt-3">
+    {{ statsError }}
+  </div>
+
+
 
   <jhi-alert-error></jhi-alert-error>
 
@@ -24,6 +75,8 @@
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="login"><span jhiTranslate="userManagement.login">Login</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="email"><span jhiTranslate="userManagement.email">Email</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col">Status</th>
+
           <th scope="col"></th>
           <th scope="col" jhiSortBy="langKey">
             <span jhiTranslate="userManagement.langKey">Language</span> <fa-icon icon="sort"></fa-icon>
