@@ -7,7 +7,6 @@ import { DEBUG_INFO_ENABLED } from 'app/app.constants';
 import { Authority } from 'app/config/authority.constants';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-
 @NgModule({
   imports: [
     RouterModule.forRoot(
@@ -32,6 +31,19 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: '',
           loadChildren: () => import(`./entities/entity-routing.module`).then(m => m.EntityRoutingModule),
         },
+         {
+    path: 'courses',
+    loadChildren: () => import('./courses/courses.module').then(m => m.CoursesModule),
+  },
+  { path: 'placement', loadChildren: () => import('./placement/placement.module').then(m => m.PlacementModule) 
+        
+      },
+      { path: 'team', loadChildren: () => import('./team/team.module').then(m => m.TeamModule)
+
+      },
+       { path: 'contact-us', loadChildren: () => import('./contact-us/contact-us.module').then(m => m.ContactUsModule)
+        
+       },
         navbarRoute,
         ...errorRoute,
       ],
