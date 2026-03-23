@@ -53,7 +53,7 @@ statsError: string | null = null;
   }
 
   setActive(user: User, isActivated: boolean): void {
-    this.userService.update({ ...user, activated: isActivated }).subscribe(() => this.loadAll());
+    this.userService.update({ ...user, activated: isActivated }).subscribe(() =>this.refreshData());
   }
 
   trackIdentity(_index: number, item: User): number {
@@ -67,6 +67,7 @@ statsError: string | null = null;
     modalRef.closed.subscribe(reason => {
       if (reason === 'deleted') {
         this.loadAll();
+        this.loadUserStats(); 
       }
     });
   }
@@ -98,8 +99,7 @@ loadUserStats(): void {
 
   this.isStatsLoading = true;
   this.statsError = null;
-
-  this.userService.getUserActivationStats()
+this.statsUserService.getUserActivationStats()
     .pipe(
       finalize(() => this.isStatsLoading = false)
     )
